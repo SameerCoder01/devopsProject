@@ -1,0 +1,38 @@
+<% layout("/layouts/boilerplate.ejs")%> <%= success %>
+    <% const adminView = !!(currUser && String(currUser.role || "").trim().toLowerCase() === "admin"); %>
+        <h3>All Listing</h3>
+
+    <% if(adminView) { %>
+            <div class="card show-card mb-4">
+                <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                    <div>
+                        <h4 class="mb-2">Admin Console</h4>
+                        <p class="text-muted mb-0">Create and manage listings from here.</p>
+                    </div>
+                    <a href="/listings/new" class="btn btn-dark px-4">Add New Listing</a>
+                </div>
+            </div>
+        <% } %>
+
+        <% if (!data.length) { %>
+            <div class="alert alert-info mt-3" role="alert">
+                No listings found. Create your first listing after login.
+            </div>
+        <% } %>
+
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+            <% for(let list of data){ %>
+                <a href="/listings/<%= list._id %>" class="listing-link">
+                    <div class="card col listing-card">
+                        <img src="<%= list.image.url %>" class="card-img-top" alt="listing" style="height: 20rem;">
+                        <div class="card-img-overlay"></div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b><%= list.title %></b>
+                                <br> <%= list.price %>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            <% } %>
+        </div>
