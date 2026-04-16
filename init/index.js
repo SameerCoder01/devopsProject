@@ -1,7 +1,8 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Listing = require("../models/listing");
 
-const mongoURL = "mongodb+srv://sk:YHTU3aSHK0XBKU4e@backend.vjgyz21.mongodb.net/";
+const mongoURL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/devopsproject";
 
 main()
 .then(()=>console.log("Connection Successful"))

@@ -22,7 +22,8 @@ const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js")
 const usersRouter = require("./routes/user.js")
 
-const mongoURL = "mongodb+srv://sk:YHTU3aSHK0XBKU4e@backend.vjgyz21.mongodb.net/devopsproject";
+const mongoURL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/devopsproject";
+const port = Number(process.env.PORT) || 8080;
 
 main()
     .then(() => console.log("Connection Successful"))
@@ -115,6 +116,6 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render("error.ejs", { err });
 });
 
-app.listen(8080, () => {
-    console.log("Server listening on port 8080");
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
 });

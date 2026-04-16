@@ -7,16 +7,22 @@ This project now includes a complete CI/CD pipeline using GitHub Actions for aut
 
 ### 1. GitHub Actions Workflow (`.github/workflows/test.yml`)
 - **Automated Testing**: Runs on every push to `main` and `develop` branches and on all pull requests
-- **Multi-version Testing**: Tests against Node.js 16.x, 18.x, and 20.x
+- **Multi-version Testing**: Tests against Node.js 18.x, 22.x, and 24.x
 - **Security Audit**: Runs npm audit to check for vulnerabilities
 - **Code Coverage**: Generates and uploads coverage reports to Codecov
+- **SonarQube Analysis**: Runs static code quality analysis and enforces Quality Gate
 
-### 2. Jest Testing Framework
+### 2. SonarQube Configuration (`sonar-project.properties`)
+- Configures source and test directories for analysis
+- Uses Jest LCOV report from `coverage/lcov.info`
+- Excludes generated and non-source folders from scan
+
+### 3. Jest Testing Framework
 - **Configuration**: `jest.config.js` - Configured for Node.js environment
 - **Coverage Tracking**: Minimum 50% coverage threshold for branches, functions, lines, and statements
 - **Test Files**: Located in `tests/` directory
 
-### 3. Available NPM Scripts
+### 4. Available NPM Scripts
 
 ```bash
 # Run tests once
@@ -61,6 +67,13 @@ npm run test:ci
    - Connect your GitHub account
    - The CI will automatically upload coverage reports
 
+4. **Set up SonarQube integration**
+   - In GitHub repository settings, add these Actions secrets:
+     - `SONAR_TOKEN`: SonarQube user token (or SonarCloud token)
+     - `SONAR_HOST_URL`: SonarQube server URL (for SonarCloud, use `https://sonarcloud.io`)
+   - Ensure `sonar.projectKey` in `sonar-project.properties` matches your Sonar project key
+   - The SonarQube job runs only when `SONAR_TOKEN` is configured
+
 ## Test File Examples
 
 ### Creating a New Test File
@@ -91,6 +104,8 @@ describe('User Controller', () => {
 5. **Run Tests** - Executes all test files
 6. **Upload Coverage** - Sends results to Codecov
 7. **Security Audit** - Checks for npm vulnerabilities
+8. **SonarQube Scan** - Runs static analysis using test coverage
+9. **Quality Gate Check** - Fails CI if quality gate does not pass
 
 ## Coverage Report
 

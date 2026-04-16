@@ -2,7 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const User = require("../models/user");
 
-const mongoURL = "mongodb+srv://sk:YHTU3aSHK0XBKU4e@backend.vjgyz21.mongodb.net/devopsproject";
+const mongoURL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/devopsproject";
 
 async function main() {
     await mongoose.connect(mongoURL);
