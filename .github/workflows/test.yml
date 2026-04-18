@@ -70,13 +70,20 @@ jobs:
         with:
           name: coverage
 
+      - name: Validate SonarCloud configuration
+        run: |
+          if [ -z "${{ secrets.SONAR_ORGANIZATION }}" ]; then
+            echo "Missing SONAR_ORGANIZATION secret. Set it to your SonarCloud organization key." >&2
+            exit 1
+          fi
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         with:
           projectBaseDir: .
           args: >
             -Dsonar.projectKey=wonder
-            -Dsonar.organization=wonder
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
