@@ -12,7 +12,7 @@ async function main(){
     await mongoose.connect(mongoURL);
 }
 
-const initDB = async () => {
+async function initDB() {
     await Listing.deleteMany({});
     console.log("All listing data cleared. No pre-fed sample data inserted.");
 }

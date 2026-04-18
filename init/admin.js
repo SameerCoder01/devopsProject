@@ -37,12 +37,14 @@ async function seedAdmin() {
     console.log(`Admin account created for ${ADMIN_USERNAME}`);
 }
 
+async function handleAdminBootstrapError(error) {
+    console.error(error.message);
+    await mongoose.connection.close().catch(() => {});
+    process.exit(1);
+}
+
 main()
     .then(seedAdmin)
     .then(() => mongoose.connection.close())
     .then(() => console.log("Admin bootstrap completed."))
-    .catch(async (error) => {
-        console.error(error.message);
-        await mongoose.connection.close().catch(() => {});
-        process.exit(1);
-    });
+    .catch(handleAdminBootstrapError);

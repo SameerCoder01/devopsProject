@@ -1,16 +1,16 @@
 const Listing = require("../models/listing.js");
 const getImagekit = require("../imagekitconfig.js");
 
-module.exports.index = async (req, res) => {
+async function index(req, res) {
   const data = await Listing.find({});
   res.render("listing/index.ejs", { data });
-};
+}
 
-module.exports.renderNewForm = (req, res) => {
+function renderNewForm(req, res) {
   res.render("listing/new.ejs");
-};
+}
 
-module.exports.showListing = async (req, res) => {
+async function showListing(req, res) {
   let { id } = req.params;
   const data = await Listing.findById(id)
     .populate({ path: "reviews", populate: { path: "author" } })
@@ -21,9 +21,9 @@ module.exports.showListing = async (req, res) => {
 
   req.flash("error", "Listing you requrested does not exist");
   res.redirect("/listings");
-};
+}
 
-module.exports.createListing = async (req, res) => {
+async function createListing(req, res) {
   if (!req.file) {
     req.flash("error", "Please upload an image for the listing.");
     return res.redirect("/listings/new");
@@ -50,9 +50,9 @@ module.exports.createListing = async (req, res) => {
 
   req.flash("success", "New Listing Created");
   res.redirect("/listings");
-};
+}
 
-module.exports.renderEditForm = async (req, res) => {
+async function renderEditForm(req, res) {
   let { id } = req.params;
   const data = await Listing.findById(id);
   if (data) {
@@ -61,9 +61,9 @@ module.exports.renderEditForm = async (req, res) => {
 
   req.flash("error", "Listing you requrested does not exist");
   res.redirect("/listings");
-};
+}
 
-module.exports.updateListing = async (req, res) => {
+async function updateListing(req, res) {
   let { id } = req.params;
   let { listing } = req.body;
 
@@ -88,7 +88,7 @@ module.exports.updateListing = async (req, res) => {
       try {
         await imagekit.deleteFile(updatedListing.image.fileId);
       } catch (error) {
-        // Ignore stale file deletion errors and keep listing update flow successful.
+        console.warn("Unable to delete the previous listing image from ImageKit:", error);
       }
     }
 
@@ -102,9 +102,9 @@ module.exports.updateListing = async (req, res) => {
 
   req.flash("success", "Listing Updated");
   res.redirect(`/listings/${id}`);
-};
+}
 
-module.exports.deleteListing = async (req, res) => {
+async function deleteListing(req, res) {
   let { id } = req.params;
   const data = await Listing.findById(id);
 
@@ -113,11 +113,21 @@ module.exports.deleteListing = async (req, res) => {
       const imagekit = getImagekit();
       await imagekit.deleteFile(data.image.fileId);
     } catch (error) {
-      // Ignore stale file deletion errors and continue deleting DB record.
+      console.warn("Unable to delete the listing image from ImageKit:", error);
     }
   }
 
   await Listing.findByIdAndDelete(id);
   req.flash("success", "Listing Deleted");
   res.redirect("/listings");
+}
+
+module.exports = {
+  index,
+  renderNewForm,
+  showListing,
+  createListing,
+  renderEditForm,
+  updateListing,
+  deleteListing,
 };

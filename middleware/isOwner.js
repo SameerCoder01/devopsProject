@@ -1,6 +1,6 @@
 const Listing = require("../models/listing.js")
 
-module.exports = async (req, res, next) => {
+async function isOwner(req, res, next) {
     let { id } = req.params;
     let listing = await Listing.findById(id);
     if(!listing.owner._id.equals(res.locals.currUser._id)){
@@ -8,4 +8,6 @@ module.exports = async (req, res, next) => {
         return res.redirect(`/listings/${id}`);
     }
     next();
-};
+}
+
+module.exports = isOwner;
